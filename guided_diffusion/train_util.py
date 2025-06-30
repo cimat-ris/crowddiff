@@ -171,8 +171,9 @@ class TrainLoop:
                 opt_checkpoint, map_location=dist_util.dev()
             )
             self.opt.load_state_dict(state_dict)
-
+            
     def run_loop(self):
+        print(th.cuda.is_available())
         while (
             not self.lr_anneal_steps
             or self.step + self.resume_step < self.lr_anneal_steps
@@ -186,7 +187,7 @@ class TrainLoop:
                 # Run for a finite amount of time in integration tests.
                 if os.environ.get("DIFFUSION_TRAINING_TEST", "") and self.step > 0:
                     return
-            if self.step %2000==0:
+            if self.step %20==0:
                 try:
                     os.mkdir(os.path.join(self.log_dir,f'results_{self.step}'))
                 except FileExistsError:
