@@ -47,7 +47,7 @@ def get_arg_parser():
 
     # count bound
     parser.add_argument('--lower_bound', default=0, type=int)
-    parser.add_argument('--upper_bound', default=np.Inf, type=int)
+    parser.add_argument('--upper_bound', default=np.inf, type=int)
 
     return parser
 
