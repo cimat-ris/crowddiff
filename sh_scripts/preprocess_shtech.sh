@@ -5,7 +5,7 @@ python cc_utils/preprocess_shtech.py \
     --data_dir $DATA_DIR \
     --output_dir $OUTPUT_DIR \
     --dataset shtech_A \
-    --mode test \
+    --mode train \
     --image_size 256 \
     --ndevices 1 \
     --sigma '0.5' \

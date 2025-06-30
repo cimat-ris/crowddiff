@@ -97,8 +97,6 @@ def main(args):
     for device, img_list in enumerate(sub_list):
         for file in img_list:
             count += 1
-            if count%10==0:
-                print(count)
             print(f'--- Processing {file}')
             # load the images and locations
             image = Image.open(file).convert('RGB')
@@ -175,11 +173,7 @@ def main(args):
                 density = pd.DataFrame(density.squeeze())
                 density.to_csv(file, header=None, index=False)
 
-            
-
-    print(count)
-    print(normalizer)
-
+        
 
 def get_kernel_and_sigma_list(args):
 
@@ -222,7 +216,7 @@ def create_dot_map(locations, image_size):
     for x,y in locations:
         x, y = int(x), int(y)
         if x < 0 or y < 0 or x >= image_size[1] or y >= image_size[0]:
-            print(f'--- Warning: ({x},{y}) is out of bounds for image size {image_size}')
+            print(f'\033[91m--- Warning: ({x},{y}) is out of bounds for image size {image_size}\033[0m')
             continue
         density[y,x] = 1.
     
