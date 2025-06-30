@@ -56,6 +56,7 @@ def main(args):
 
     # dataset directiors
     data_dir = os.path.join(args.data_dir, args.dataset)
+    print('--- Dataset directory:', data_dir    )
     mode = args.mode
 
     # output directory
@@ -81,9 +82,8 @@ def main(args):
     # distribution of crowd count
     crowd_bin = [0,0,0,0]
 
-
     img_list = sorted(glob.glob(os.path.join(data_dir,mode+'_data','images','*.jpg')))
-
+    print('--- Images found:', len(img_list))
     sub_list = setup_sub_folders(img_list, output_dir, ndevices=args.ndevices)
 
     kernel_list = []
@@ -99,11 +99,10 @@ def main(args):
             count += 1
             if count%10==0:
                 print(count)
+            print(f'--- Processing {file}')
             # load the images and locations
             image = Image.open(file).convert('RGB')
-            # image = np.asarray(image).astype(np.uint8)
-
-            file = file.replace('images','ground-truth').replace('IMG','GT_IMG').replace('jpg','mat')
+            file = file.replace('images','ground_truth').replace('IMG','GT_IMG').replace('jpg','mat')
             locations = loadmat(file)['image_info'][0][0]['location'][0][0]
 
             # if not (args.lower_bound <= len(locations) and len(locations) < args.upper_bound):
@@ -121,6 +120,7 @@ def main(args):
                 image = np.asarray(image)
             else:
                 if mode == 'train' or mode=='test':
+                    print('--- Resizing and rescaling image and locations')
                     image, locations = resize_rescale_info(image, locations, image_size)
                 else:
                     image = np.asarray(image)
@@ -221,6 +221,9 @@ def create_dot_map(locations, image_size):
     density = np.zeros(image_size[:-1])
     for x,y in locations:
         x, y = int(x), int(y)
+        if x < 0 or y < 0 or x >= image_size[1] or y >= image_size[0]:
+            print(f'--- Warning: ({x},{y}) is out of bounds for image size {image_size}')
+            continue
         density[y,x] = 1.
     
     return density
@@ -242,6 +245,7 @@ def resize_rescale_info(image, locations, image_size):
     # check if the both dimensions are larger than the image size
     if h < image_size or w < image_size:
         scale = np.ceil(max(image_size/h, image_size/w))
+        print(f'--- Rescaling image and locations by {scale}')
         h, w = int(scale*h), int(scale*w)
         locations = locations*scale
 
