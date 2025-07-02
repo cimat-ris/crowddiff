@@ -331,13 +331,21 @@ class GaussianDiffusion:
         assert (
             model_mean.shape == model_log_variance.shape == pred_xstart.shape == x.shape
         )
+        if isinstance(model_output, dict):
+            return {
+                "mean": model_mean,
+                "variance": model_variance,
+                "log_variance": model_log_variance,
+                "pred_xstart": pred_xstart,
+                "count": count_output,
+                "feats": feats,
+            }
         return {
             "mean": model_mean,
             "variance": model_variance,
             "log_variance": model_log_variance,
             "pred_xstart": pred_xstart,
             "count": count_output,
-            "feats": feats,
         }
 
     def _predict_xstart_from_eps(self, x_t, t, eps):
